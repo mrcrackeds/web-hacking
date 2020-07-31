@@ -1,0 +1,55 @@
+<!-- simple bing dorker wroten in js by MatriX Coder !-->
+<html>
+<head>
+  <title>Bing Grabber :D</title>
+</head>
+<body>
+  <div align="center">
+	  <form id="root" method="POST">
+		Dork > <input type="text" name="dork" size="32" style="border: 1px dotted #FF0000;width : 600">
+		Pages : <select name="nbpages">
+		  <option value="50">50</option>
+		  <option value="100">100</option>
+		  <option value="150">150</option>
+		  <option value="200">200</option>
+		</select>
+	   <input type="button" onclick="run(dork.value, nbpages.value)" value="Go!">
+	  </form>
+	<textarea rows="10", cols="50" id="out" style="border: 1px dotted #FF0000; width: 964px; height: 343px;" size="32"></textarea>
+	
+  </div>
+<script type="text/javascript">
+function getHtml(url) {
+	var req = new XMLHttpRequest;
+	req.open('GET', url, false);
+	// fixed when installed cors on chrome
+	//req.setRequestHeader("Access-Control-Allow-Origin", "*://*/*");
+	req.send(null);
+	return req.responseText;
+
+} ;
+
+function parseHtml(html) {
+	// not the best solution but it's ok http://stackoverflow.com/questions/27581593/javascript-regex-match-url
+	links = html.match(/<h2><a href="(.*?)"/g); 
+	var result = links.map(function (link) {
+	return /<h2><a href="(.*?)"/g.exec(link)[1];
+	}); 
+	return result ;
+};
+
+function run(dork, nbpages){
+	for (var i = 1 ; i < nbpages ; i += 50) {
+		dork = dork.split(" ").join("+");
+		var bing = 'http://www.bing.com/search?q='+dork+'&count=50&first='+i.toString();
+		var html = getHtml(bing);
+		var sites = parseHtml(html);
+		sites.forEach(function (site) {
+			document.getElementById('out').value += site + '\n';
+		});
+	};
+};
+
+</script>
+</body>
+</html>
